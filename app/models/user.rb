@@ -95,7 +95,17 @@ class User < ApplicationRecord
   def following?(other_user) # Returns if the current user is following the other_user or not
     following.include?(other_user)
   end
-  
+
+  # Returns true if a password reset has expired.
+  def password_reset_expired?
+    reset_sent_at < 5.minutes.ago
+  end
+
+
+  # def account_activation_expired?
+  #   activated_at < 5.minutes.ago
+  # end
+
   private
 
   # Creates and assigns the activation token and digest.

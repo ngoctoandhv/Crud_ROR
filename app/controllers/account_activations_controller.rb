@@ -1,4 +1,7 @@
 class AccountActivationsController < ApplicationController
+
+  # before_action :check_expiration_active, only: :edit
+
   def edit
     user = User.find_by email: params[:email]
     if user && !user.activated? && user.authenticated?(:activation, params[:id])
@@ -13,4 +16,13 @@ class AccountActivationsController < ApplicationController
       redirect_to root_url
     end
   end
+
+  # private
+
+  # def check_expiration_active
+  #   if @user.account_activation_expired?
+  #     flash[:danger] = "Active account has expired."
+  #     redirect_to root_url
+  #   end
+  # end
 end
