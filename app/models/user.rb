@@ -101,10 +101,15 @@ class User < ApplicationRecord
     reset_sent_at < 5.minutes.ago
   end
 
+  def create_activation_sent_at_digest
+    self.activation_token  = User.new_token
+    update_attribute(:activation_digest, User.digest(activation_token))
+    update_attribute(:account_activation_sent_at, Time.zone.now)
+  end
 
-  # def account_activation_expired?
-  #   activated_at < 5.minutes.ago
-  # end
+  def account_activation_expired?
+    account_activation_sent_at < 2.minutes.ago
+  end
 
   private
 
