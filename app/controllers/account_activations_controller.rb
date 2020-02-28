@@ -4,7 +4,7 @@ class AccountActivationsController < ApplicationController
 
   def create
     @user = User.find_by email: params[:account_activation][:email].downcase
-    if @user
+    if @user && !@user.activated?
       @user.create_activation_sent_at_digest
       @user.send_activation_email
       flash[:info] = "Email sent active account"
@@ -16,7 +16,6 @@ class AccountActivationsController < ApplicationController
   end
 
   def edit
-    @user = User.find_by email: params[:email]
     if @user && !@user.activated? && @user.authenticated?(:activation, params[:id])
       @user.activate
       # user.update_attribute :activated, true
@@ -44,7 +43,7 @@ class AccountActivationsController < ApplicationController
     @user = User.find_by email: params[:email].downcase
     if @user.account_activation_expired?
       flash[:danger] = "Active account has expired."
-      redirect_to root_url
+      redirect_to login_path
     end
   end
 end
